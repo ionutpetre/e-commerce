@@ -1,17 +1,20 @@
 'use strict';
 
-let productService = require('./routes/services/product');
+let express = require('express'),
+    path = require('path'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    productApi = require('./routes/api/product');
 
-productService.getProducts((err, products) => {
-    console.log(products);
-});
+let app = express();
 
-/*productService.getProductById(1, (err, product) => {
-    console.log(product);
-});*/
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-productService.getProductById(1).then((product) => {
-    console.log(product);
-}).catch((err) => {
-    console.log(err);
+app.use('/api/products', productApi);
+
+app.listen(3000, () => {
+    console.log('Listening on port 3000...');
 });
